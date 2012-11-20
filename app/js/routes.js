@@ -9,7 +9,7 @@
 
 define(['app'], function (app) {
 
-    function viewConfig(controllerProvider, controllerName, templateUrl) {
+    function routeConfig(controllerProvider, controllerName, templateUrl) {
         var defer,
             html,
             routeDefinition = {};
@@ -41,8 +41,8 @@ define(['app'], function (app) {
     }
 
     return app.config(function ($routeProvider, $controllerProvider) {
-        $routeProvider.when('/view1', viewConfig($controllerProvider, 'controllers/first', '../partials/view1.html'));
-        $routeProvider.when('/view2', viewConfig($controllerProvider, 'controllers/second', '../partials/view2.html'));
+        $routeProvider.when('/view1', routeConfig($controllerProvider, 'controllers/first', '../partials/view1.html'));
+        $routeProvider.when('/view2', routeConfig($controllerProvider, 'controllers/second', '../partials/view2.html'));
 
         $routeProvider.otherwise({redirectTo:'/view1'});
     });
