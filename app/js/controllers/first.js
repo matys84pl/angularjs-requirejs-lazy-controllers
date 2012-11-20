@@ -7,23 +7,11 @@
 
 'use strict';
 
-define(['app'], function (app) {
+define([], function () {
 
-    var FirstController = function ($scope, $timeout) {
-        var message = "I'm the 1st controller! random: ";
-        $scope.message = message;
-
-        function update() {
-            $scope.message = message + Math.random();
-            $timeout(update, 1000);
-        }
-
-        update();
+    function FirstController($scope) {
+        $scope.message = "I'm the 1st controller!";
     }
-
-    FirstController.$inject = ['$scope', '$timeout'];
-
-    app.controller('FirstController', FirstController);
 
     return FirstController;
 });

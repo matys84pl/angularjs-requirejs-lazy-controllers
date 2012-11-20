@@ -10,6 +10,7 @@
 require.config({
     baseUrl:'js',
     paths:{
+        text:'../lib/require/text',
         jquery:'../lib/jquery/jquery',
         angular:'../lib/angular/angular'
     },
@@ -26,9 +27,9 @@ require.config({
 
 require([
     'angular',
+    'text',
     'jquery',
     'app',
-    'directives',
     'routes'
 ], function (angular) {
     //This function will be called when all the dependencies

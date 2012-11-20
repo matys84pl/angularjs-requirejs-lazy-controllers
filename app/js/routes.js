@@ -9,14 +9,41 @@
 
 define(['app'], function (app) {
 
-    return app.config(function ($routeProvider) {
-        $routeProvider.when('/view1', {
-            templateUrl:'partials/view1.html'
-        });
-        $routeProvider.when('/view2', {
-            templateUrl:'partials/view2.html',
-            controllerModule:'controllers/second'
-        });
+    function viewConfig(controllerProvider, controllerName, templateUrl) {
+        var defer,
+            html,
+            routeDefinition = {};
+
+        routeDefinition.template = function () {
+            return html;
+        };
+        routeDefinition.controller = controllerName;
+        routeDefinition.resolve = {
+            delay:function ($q,  $rootScope) {
+                defer = $q.defer();
+                if (!routeDefinition.html) {
+
+                    require([controllerName, "text!" + templateUrl], function (controller, template) {
+                        controllerProvider.register(controllerName, controller);
+                        html = template;
+                        defer.resolve(true);
+                        $rootScope.$apply()
+                    })
+
+                } else {
+                    defer.resolve(true);
+                }
+                return defer.promise;
+            }
+        }
+
+        return routeDefinition;
+    }
+
+    return app.config(function ($routeProvider, $controllerProvider) {
+        $routeProvider.when('/view1', viewConfig($controllerProvider, 'controllers/first', '../partials/view1.html'));
+        $routeProvider.when('/view2', viewConfig($controllerProvider, 'controllers/second', '../partials/view2.html'));
+
         $routeProvider.otherwise({redirectTo:'/view1'});
     });
 
