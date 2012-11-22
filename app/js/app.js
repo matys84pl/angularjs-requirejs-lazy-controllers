@@ -6,6 +6,10 @@
  */
 'use strict';
 
-define(['angular'], function (angular) {
-    return angular.module('myApp', []);
+define(['angular', 'utils/route-config'], function (angular, routeConfig, lazyDirectives) {
+
+    return angular.module('myApp', [], function ($compileProvider, $controllerProvider) {
+        routeConfig.setCompileProvider($compileProvider);
+        routeConfig.setControllerProvider($controllerProvider);
+    })
 });

@@ -7,42 +7,11 @@
 
 'use strict';
 
-define(['app'], function (app) {
+define(['app', 'utils/route-config'], function (app, routeConfig) {
 
-    function routeConfig(controllerProvider, controllerName, templateUrl) {
-        var defer,
-            html,
-            routeDefinition = {};
-
-        routeDefinition.template = function () {
-            return html;
-        };
-        routeDefinition.controller = controllerName;
-        routeDefinition.resolve = {
-            delay:function ($q,  $rootScope) {
-                defer = $q.defer();
-                if (!routeDefinition.html) {
-
-                    require([controllerName, "text!" + templateUrl], function (controller, template) {
-                        controllerProvider.register(controllerName, controller);
-                        html = template;
-                        defer.resolve(true);
-                        $rootScope.$apply()
-                    })
-
-                } else {
-                    defer.resolve(true);
-                }
-                return defer.promise;
-            }
-        }
-
-        return routeDefinition;
-    }
-
-    return app.config(function ($routeProvider, $controllerProvider) {
-        $routeProvider.when('/view1', routeConfig($controllerProvider, 'controllers/first', '../partials/view1.html'));
-        $routeProvider.when('/view2', routeConfig($controllerProvider, 'controllers/second', '../partials/view2.html'));
+    return app.config(function ($routeProvider) {
+        $routeProvider.when('/view1', routeConfig.config('../partials/view1.html', 'controllers/first'));
+        $routeProvider.when('/view2', routeConfig.config('../partials/view2.html', 'controllers/second', ['directives/version']));
 
         $routeProvider.otherwise({redirectTo:'/view1'});
     });

@@ -1,7 +1,7 @@
 angularjs-requirejs-lazy-controllers
 ====================================
 
-Routes configuration that loads both template and controller using RequireJS. Files are loaded (in parallel)
+Routes configuration that loads template, controller and directives using RequireJS. Files are loaded (in parallel)
 when user changes the location and are displayed in Angular's ngView.
 
 ## Used libs
@@ -12,13 +12,26 @@ when user changes the location and are displayed in Angular's ngView.
 
 ## Usage
 
-```javascript
-app.config(function ($routeProvider, $controllerProvider) {
-     $routeProvider.when('/view1', routeConfig($controllerProvider, 'controllers/first', '../partials/view1.html'));
-     $routeProvider.when('/view2', routeConfig($controllerProvider, 'controllers/second', '../partials/view2.html'));
+### app.js
 
-     $routeProvider.otherwise({redirectTo:'/view1'});
-  });
+```javascript
+
+ return angular.module('myApp', [], function ($compileProvider, $controllerProvider) {
+         routeConfig.setCompileProvider($compileProvider);
+         routeConfig.setControllerProvider($controllerProvider);
+     })
+```
+
+### routes.js
+
+```javascript
+
+ return app.config(function ($routeProvider) {
+        $routeProvider.when('/view1', routeConfig.config('../partials/view1.html', 'controllers/first'));
+        $routeProvider.when('/view2', routeConfig.config('../partials/view2.html', 'controllers/second', ['directives/version']));
+
+        $routeProvider.otherwise({redirectTo:'/view1'});
+    });
 ```
 
 ## License
