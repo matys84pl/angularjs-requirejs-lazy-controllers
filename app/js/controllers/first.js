@@ -11,6 +11,8 @@ define([], function () {
 
     function FirstController($scope) {
         $scope.message = "I'm the 1st controller!";
+        $scope.greeting = "Hello world!";
+
     }
 
     return FirstController;

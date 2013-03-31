@@ -9,8 +9,8 @@
 
 define([], function () {
 
-    function SecondController($scope) {
-        $scope.message = "I'm the 2nd controller!";
+    function SecondController($scope, tester) {
+        $scope.message = "I'm the 2nd controller! "  + tester;
     }
 
     return SecondController;
