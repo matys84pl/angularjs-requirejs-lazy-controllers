@@ -3,19 +3,24 @@ define([], function () {
     var $provide;
 
     function setProvide(value) {
-        console.log(value);
         $provide = value;
     }
 
     function register(service) {
-        if (!$provide) {
-            throw new Error("$setProvide is not set!");
+        if (service) {
+            if (!$provide) {
+                throw new Error("$setProvide is not set!");
+            }
+            $provide.value(service[0], service[1]);
+        } else {
+            $provide.value = null;
         }
-        $provide.value(service[0], service[1]);
+
     }
 
+
     return {
-        setProvide:setProvide,
-        register:register
+        setProvide: setProvide,
+        register: register
     }
 })

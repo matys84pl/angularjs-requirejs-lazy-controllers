@@ -8,9 +8,10 @@
 
 define(['angular', 'utils/route-config'], function (angular, routeConfig) {
 
-    return angular.module('myApp', [], function ($provide, $compileProvider, $controllerProvider) {
+    return angular.module('myApp', [], function ($provide, $compileProvider, $controllerProvider, $filterProvider) {
         routeConfig.setProvide($provide);
         routeConfig.setCompileProvider($compileProvider);
         routeConfig.setControllerProvider($controllerProvider);
+        routeConfig.setFilterProvider($filterProvider);
     })
 });

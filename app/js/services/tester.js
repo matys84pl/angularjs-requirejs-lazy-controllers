@@ -9,5 +9,5 @@
 
 define([], function () {
 
-    return ['tester', 'tester123']
+    return ['tester', 'test service via value return']
 })

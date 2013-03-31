@@ -10,8 +10,9 @@
 define([], function () {
 
     function FirstController($scope, tester) {
-        $scope.message = "I'm the 1st controller!" + tester;
-        console.log(tester);
+        $scope.message = "I'm the 1st controller! " + tester;
+        $scope.greeting = "Hello world!";
+
     }
 
     return FirstController;

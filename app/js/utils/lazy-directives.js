@@ -14,14 +14,19 @@ define([], function () {
     }
 
     function register(directive) {
-        if (!$compileProvider) {
-            throw new Error("$compileProvider is not set!");
+        if(directive){
+            if (!$compileProvider) {
+                throw new Error("$compileProvider is not set!");
+            }
+            $compileProvider.directive.apply(null, directive);
+        }else{
+            $compileProvider.directive.apply = null;
         }
-        $compileProvider.directive.apply(null, directive);
+
     }
 
     return {
-        setCompileProvider:setCompileProvider,
-        register:register
+        setCompileProvider: setCompileProvider,
+        register: register
     }
 })
