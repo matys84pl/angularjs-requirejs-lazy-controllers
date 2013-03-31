@@ -5,10 +5,11 @@
  * Time: 22:38
  */
 
-define(['utils/lazy-directives'], function (lazyDirectives) {
+define(['utils/lazy-directives', 'utils/lazy-services'], function (lazyDirectives, lazyServices) {
 
     var $controllerProvider,
-        $compileProvider;
+        $compileProvider,
+        $provide;
 
     function setControllerProvider(value) {
         $controllerProvider = value;
@@ -18,8 +19,21 @@ define(['utils/lazy-directives'], function (lazyDirectives) {
         $compileProvider = value;
         lazyDirectives.setCompileProvider(value);
     }
-
-    function config(templateUrl, controllerName, directives) {
+    
+	function setProvide(value){
+        $provide = value;
+        lazyServices.setProvide(value);
+    }
+    
+    // Use this as a guide to extend... current "services" is only value provide
+    // Services should use factory
+    //$provide.value('a', 123);
+    //$provide.factory('a', function() { return 123; });
+    //$compileProvider.directive('directiveName', ...);
+    //$filterProvider.register('filterName', ...);
+    
+    
+    function config(templateUrl, controllerName, controllers, lazyResources) {
         if (!$controllerProvider) {
             throw new Error("$controllerProvider is not set!");
         }
@@ -36,19 +50,42 @@ define(['utils/lazy-directives'], function (lazyDirectives) {
             delay:function ($q, $rootScope) {
                 defer = $q.defer();
                 if (!html) {
-                    var dependencies = [controllerName, "text!" + templateUrl];
-                    if (directives) {
-                        dependencies = dependencies.concat(directives);
+                    var dependencies = ["text!" + templateUrl, controllerName];
+                    if (controllers) {
+                        dependencies = dependencies.concat(controllers);
+                    }
+                    if(lazyResources){
+                        if (lazyResources.directives) {
+                            dependencies = dependencies.concat(lazyResources.directives);
+                        }
+                        if (lazyResources.services) {
+                            dependencies = dependencies.concat(lazyResources.services);
+
+                        }
                     }
                     require(dependencies, function () {
-                        var controller = arguments[0],
-                            template = arguments[1];
+                        var template = arguments[0];
+                        $controllerProvider.register(controllerName, arguments[1]);
 
-                        for (var i = 2; i < arguments.length; i++) {
-                            lazyDirectives.register(arguments[i]);
+                        if (controllers) {
+                            for (var i = 2; i < 2 + controllers.length; i++) {
+                            $controllerProvider.register(arguments[i][0], arguments[i][1]);                            }
+                        }
+                        if(lazyResources){
+                            if (lazyResources.directives) {
+                                for (var i = 2 + (controllers == null ? 0 : controllers.length); i < arguments.length; i++) {
+                                    lazyDirectives.register(arguments[i]);
+                                }
+                            }
+                            if (lazyResources.services) {
+                                for (var i = 2 + (controllers == null ? 0 : controllers.length); i < arguments.length; i++) {
+                                    lazyServices.register(arguments[i]);
+                                }
+                            }
                         }
 
-                        $controllerProvider.register(controllerName, controller);
+
+
                         html = template;
                         defer.resolve();
                         $rootScope.$apply()
@@ -67,6 +104,7 @@ define(['utils/lazy-directives'], function (lazyDirectives) {
     return {
         setControllerProvider:setControllerProvider,
         setCompileProvider:setCompileProvider,
+        setProvide: setProvide,
         config:config
     }
 })
