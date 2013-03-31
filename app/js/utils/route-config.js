@@ -66,39 +66,43 @@ define(['utils/lazy-directives', 'utils/lazy-services', 'utils/lazy-filters'], f
                         dependencies = dependencies.concat(lazyResources.filters);
                     }
                     require(dependencies, function () {
-                        var template = arguments[0];
-                        $controllerProvider.register(controllerName, arguments[1]);
 
-                        if (controllers) {
-                            for (var i = 2; i < 2 + controllers.length; i++) {
-                                $controllerProvider.register(arguments[i][0], arguments[i][1]);
+                            // TODO fix this mess
+                            var template = arguments[0];
+                            $controllerProvider.register(controllerName, arguments[1]);
+                            var baseNumber = 2 + (controllers == null ? 0 : controllers.length);
+                            var directiveNumber = (lazyResources.directives == null ? 0 : lazyResources.directives.length);
+                            var serviceNumber = (lazyResources.services == null ? 0 : lazyResources.services.length);
+                            var filterNumber = (lazyResources.filters == null ? 0 : lazyResources.filters.length);
+
+                            if (controllers) {
+                                for (var i = 2; i < baseNumber; i++) {
+                                    $controllerProvider.register(arguments[i][0], arguments[i][1]);
+                                }
                             }
-                        }
-                        if (lazyResources) {
-                            for (var i = 2 + (controllers == null ? 0 : controllers.length); i < arguments.length; i++) {
-
-                                // TODO refactor this mess...
-                                if (i === (2 + (controllers == null ? 0 : controllers.length))) {
+                            if (lazyResources.directives) {
+                                for (var i = (baseNumber); i < baseNumber + directiveNumber; i++) {
                                     lazyDirectives.register(arguments[i]);
                                 }
-
-                                if (i === (2 + (controllers == null ? 0 : controllers.length) + 1)) {
+                            }
+                            if (lazyResources.services) {
+                                for (var i = (baseNumber) + directiveNumber; i < baseNumber + directiveNumber + serviceNumber; i++) {
                                     lazyServices.register(arguments[i]);
                                 }
-
-                                if (i === (2 + (controllers == null ? 0 : controllers.length) + 2)) {
+                            }
+                            if (lazyResources.filters) {
+                                for (var i = (baseNumber) + directiveNumber + serviceNumber; i < baseNumber + directiveNumber + serviceNumber + filterNumber; i++) {
                                     lazyFilters.register(arguments[i]);
                                 }
                             }
+                            html = template;
+                            defer.resolve();
+                            $rootScope.$apply()
                         }
+                    )
 
-
-                        html = template;
-                        defer.resolve();
-                        $rootScope.$apply()
-                    })
-
-                } else {
+                }
+                else {
                     defer.resolve();
                 }
                 return defer.promise;
